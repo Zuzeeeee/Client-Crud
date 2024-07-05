@@ -18,6 +18,10 @@
   a {
     @apply no-underline;
   }
+
+  form input {
+    @apply p-3 rounded border-[#2e374a] border-2 my-4 bg-[#151c2c];
+  }
 }
 
 @layer utilities {

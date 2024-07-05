@@ -4,11 +4,11 @@ import { ReactElement } from 'react';
 
 const Layout = ({ children }: { children: JSX.Element }) => {
   return (
-    <div className='flex h-full'>
+    <div className='flex min-h-full'>
       <div className='bg-[#182237] p-6 '>
         <Sidebar></Sidebar>
       </div>
-      <div className='flex-1'>
+      <div className='flex-1 p-8'>
         <Navbar></Navbar>
         {children}
       </div>

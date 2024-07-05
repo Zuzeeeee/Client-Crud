@@ -1,7 +1,7 @@
 const Login = () => {
   return (
     <div className='bg-[#151c2c] w-full h-screen flex items-center justify-center'>
-      <div className='bg-[#182237] p-12 rounded '>
+      <div className='bg-[#182237] p-12 rounded w-4/12 h-4/12 min-w-80 min-h-80'>
         <form className='p-12 flex flex-col items-center justify-center gap-8'>
           <h1>Login</h1>
           <input

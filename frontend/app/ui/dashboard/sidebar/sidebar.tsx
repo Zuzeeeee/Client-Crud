@@ -17,8 +17,8 @@ const menuItems = [
         icon: <MdDashboard />,
       },
       {
-        title: 'Users',
-        path: '/dashboard/users',
+        title: 'Add User',
+        path: '/dashboard/user',
         icon: <MdSupervisedUserCircle />,
       },
     ],
@@ -27,7 +27,7 @@ const menuItems = [
 
 const Sidebar = async () => {
   return (
-    <div className='sticky top-4 h-full'>
+    <div className='sticky top-4 '>
       <div className='flex items-center gap-2 mb-2'>
         <Image
           className='object-cover rounded-full'
@@ -54,7 +54,7 @@ const Sidebar = async () => {
         ))}
       </ul>
       <form>
-        <button className='p-5 flex items-center w-full text-white gap-4 my-2 rounded-sm bg-none border-none absolute bottom-0'>
+        <button className='p-5 flex items-center w-full text-white gap-4 my-2 rounded-sm bg-none border-none '>
           <MdLogout />
           Logout
         </button>
