@@ -1,25 +1,7 @@
+import { getAllUser } from '@/app/lib/action';
 import Pagination from '@/app/ui/dashboard/pagination/pagination';
 import Search from '@/app/ui/dashboard/search/search';
-import Image from 'next/image';
 import Link from 'next/link';
-
-const mockUser = [
-  {
-    id: '1',
-    name: 'José',
-    surname: 'Alves',
-    email: 'josealves7jk@gmail.com',
-    birthDate: '27/10/2002',
-    tel: '(11)123456789',
-    address: {
-      cep: '1234567',
-      state: 'SP',
-      street: 'Rua aleatoria',
-      number: '12',
-    },
-    billing: [],
-  },
-];
 
 const Dashboard = async ({
   searchParams,
@@ -28,8 +10,7 @@ const Dashboard = async ({
 }) => {
   const q = searchParams?.q || '';
   const page = searchParams?.page || 1;
-  // const { count, users } = await fetchUsers(q, page);
-
+  const { data } = await getAllUser(page);
   return (
     <div className='p-5 mt-5 bg-[#182237] rounded'>
       <div className='flex items-center justify-between'>
@@ -51,36 +32,45 @@ const Dashboard = async ({
           </tr>
         </thead>
         <tbody>
-          {mockUser.map((user) => (
-            <tr key={user.id}>
-              <td className='p-2'>
-                <span>
-                  {user.name} {user.surname}
-                </span>
-              </td>
-              <td className='p-2'>{user.email}</td>
-              <td className='p-2'>{user.birthDate}</td>
-              <td className='p-2'>{user.tel}</td>
-              <td className='p-2'>
-                <div className='flex gap-4'>
-                  <Link href={`/dashboard/${user.id}`}>
-                    <button className='rounded cursor-pointer py-2 px-3 text-white border-none bg-teal-500'>
-                      View
-                    </button>
-                  </Link>
-                  <form>
-                    <input type='hidden' name='id' value={user.id} />
-                    <button className='rounded cursor-pointer py-2 px-3 text-white border-none bg-red-500'>
-                      Delete
-                    </button>
-                  </form>
-                </div>
-              </td>
-            </tr>
-          ))}
+          {data.map(
+            (user: {
+              id: number;
+              name: string;
+              surname: string;
+              email: string;
+              birthDate: string;
+              telephone: string;
+            }) => (
+              <tr key={user.id}>
+                <td className='p-2'>
+                  <span>
+                    {user.name} {user.surname}
+                  </span>
+                </td>
+                <td className='p-2'>{user.email}</td>
+                <td className='p-2'>{user.birthDate}</td>
+                <td className='p-2'>{user.telephone}</td>
+                <td className='p-2'>
+                  <div className='flex gap-4'>
+                    <Link href={`/dashboard/${user.id}`}>
+                      <button className='rounded cursor-pointer py-2 px-3 text-white border-none bg-teal-500'>
+                        View
+                      </button>
+                    </Link>
+                    <form>
+                      <input type='hidden' name='id' value={user.id} />
+                      <button className='rounded cursor-pointer py-2 px-3 text-white border-none bg-red-500'>
+                        Delete
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            )
+          )}
         </tbody>
       </table>
-      <Pagination count={mockUser.length} />
+      <Pagination count={data.length} />
     </div>
   );
 };

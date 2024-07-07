@@ -1,5 +1,7 @@
+import { getUser, getUserCards } from '@/app/lib/action';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Key } from 'react';
 
 const user = {
   id: '1',
@@ -19,6 +21,8 @@ const user = {
 
 const SingleUserPage = async ({ params }: { params: { id: string } }) => {
   const { id } = params;
+  const data = await getUser(id);
+  const cardData = await getUserCards(id);
 
   return (
     <div className='flex gap-5'>
@@ -30,20 +34,20 @@ const SingleUserPage = async ({ params }: { params: { id: string } }) => {
       </div>
       <div className='p-5 mt-5 flex-1 bg-[#182237] rounded'>
         <form className='flex flex-col'>
-          <input type='hidden' name='id' value={user.id} />
+          <input type='hidden' name='id' value={data.id} />
           <label className='text-xs'>Name</label>
-          <input type='text' name='name' placeholder={user.name} />
+          <input type='text' name='name' placeholder={data.name} />
           <label className='text-xs'>Surname</label>
-          <input type='text' name='surname' placeholder={user.surname} />
+          <input type='text' name='surname' placeholder={data.surname} />
           <label className='text-xs'>Email</label>
-          <input type='email' name='email' placeholder={user.email} />
+          <input type='email' name='email' placeholder={data.email} />
           <label className='text-xs'>Phone</label>
-          <input type='text' name='phone' placeholder={user.tel} />
+          <input type='text' name='phone' placeholder={data.telephone} />
           <label className='text-xs'>Cep</label>
-          <input type='text' name='address' placeholder={user.address.cep} />
+          <input type='text' name='address' placeholder={data.cep} />
           <div className='flex items-center justify-between py-4'>
             <label className='text-xs'>Cards</label>
-            <Link href={`/dashboard/add?q=${user.id}`}>
+            <Link href={`/dashboard/add?q=${data.id}`}>
               <button className='p-2 bg-indigo-700 rounded cursor-pointer text-white border-none'>
                 Add New
               </button>
@@ -59,44 +63,46 @@ const SingleUserPage = async ({ params }: { params: { id: string } }) => {
               </tr>
             </thead>
             <tbody>
-              {user.billing.map((card) => {
-                return (
-                  <tr key={card.number}>
-                    <td>
-                      <input
-                        type='text'
-                        name='address'
-                        placeholder={card.number}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type='text'
-                        name='address'
-                        placeholder={card.cvv}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type='text'
-                        name='address'
-                        placeholder={card.expiredAt}
-                      />
-                    </td>
+              {cardData.map(
+                (card: { number: string; cvv: string; expiredAt: string }) => {
+                  return (
+                    <tr key={card.number}>
+                      <td>
+                        <input
+                          type='text'
+                          name='address'
+                          placeholder={card.number}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type='text'
+                          name='address'
+                          placeholder={card.cvv}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type='text'
+                          name='address'
+                          placeholder={card.expiredAt}
+                        />
+                      </td>
 
-                    <td>
-                      <div className='flex'>
-                        <form>
-                          <input type='hidden' name='id' value={user.id} />
-                          <button className='rounded cursor-pointer py-2 px-3 text-white border-none bg-red-500 '>
-                            Delete
-                          </button>
-                        </form>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+                      <td>
+                        <div className='flex'>
+                          <form>
+                            <input type='hidden' name='id' value={user.id} />
+                            <button className='rounded cursor-pointer py-2 px-3 text-white border-none bg-red-500 '>
+                              Delete
+                            </button>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                }
+              )}
             </tbody>
           </table>
           <button className='w-full p-5 bg-teal-700 rounded cursor-pointer mt-5 border-none'>
