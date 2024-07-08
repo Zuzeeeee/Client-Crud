@@ -1,6 +1,6 @@
 'use server';
 
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -20,6 +20,14 @@ export interface CardData {
   number: string;
   cvv: string;
   expiredAt: string;
+}
+
+interface ResponseError {
+  response: {
+    data: {
+      message: string;
+    };
+  };
 }
 
 const uri = 'http://127.0.0.1:8000';
@@ -65,7 +73,7 @@ export const addUser = async (formData: UserData) => {
     response = await axios.post(`${uri}/api/user`, newUser);
     return response;
   } catch (err) {
-    console.log(err.response.data.message);
+    console.log((err as ResponseError).response.data.message);
   } finally {
     if (response?.status === 200) {
       revalidatePath('/dashboard');
