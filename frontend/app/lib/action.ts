@@ -48,28 +48,29 @@ export const addUser = async (formData: UserData) => {
     city,
   } = formData;
 
+  const newUser = {
+    name,
+    surname,
+    email,
+    telephone,
+    birthDate,
+    cep,
+    street,
+    state,
+    city,
+  };
+
+  let response;
   try {
-    const newUser = {
-      name,
-      surname,
-      email,
-      telephone,
-      birthDate,
-      cep,
-      street,
-      state,
-      city,
-    };
-
-    const response = await axios.post(`${uri}/api/user`, newUser);
-
+    response = await axios.post(`${uri}/api/user`, newUser);
     return response;
   } catch (err) {
-    console.log(err);
-    throw new Error('Error on creating user');
+    console.log(err.response.data.message);
   } finally {
-    revalidatePath('/dashboard');
-    redirect('/dashboard');
+    if (response?.status === 200) {
+      revalidatePath('/dashboard');
+      redirect('/dashboard');
+    }
   }
 };
 
@@ -96,39 +97,25 @@ export const addCard = async (formData: CardData, id: string) => {
 };
 
 export const getAllUser = async (page: number) => {
-  const response = await fetch(`${uri}/api/users?page=${page}`);
+  const response = await axios.get(`${uri}/api/users?page=${page}`);
 
-  const res = response.json();
-
-  return res.then((data) => data);
+  return response.data;
 };
 
 export const getUser = async (userId: string) => {
-  const response = await fetch(`${uri}/api/user/${userId}`, {
-    next: { tags: ['users'] },
-  });
+  const response = await axios.get(`${uri}/api/user/${userId}`);
 
-  const res = response.json();
-
-  return res.then((data) => data);
+  return response.data;
 };
 
 export const getUserCards = async (userId: string) => {
-  const response = await fetch(`${uri}/api/card/${userId}`, {
-    next: { tags: ['users'] },
-  });
+  const response = await axios.get(`${uri}/api/card/${userId}`);
 
-  const res = response.json();
-
-  return res.then((data) => data);
+  return response.data;
 };
 
 export const deleteCard = async (cardId: string, userId: string) => {
-  const response = await fetch(`${uri}/api/card/${cardId}`, {
-    method: 'delete',
-  });
-
-  console.log(response.status);
+  const response = await axios.delete(`${uri}/api/card/${cardId}`);
 
   revalidatePath(`/dashboard`);
 
@@ -136,11 +123,9 @@ export const deleteCard = async (cardId: string, userId: string) => {
 };
 
 export const deleteUser = async (userId: string) => {
-  const response = await fetch(`${uri}/api/user/${userId}`, {
-    method: 'delete',
-  });
+  const response = await axios.delete(`${uri}/api/user/${userId}`);
 
   revalidatePath(`/dashboard`);
-
+  console.log(response);
   return response.status;
 };

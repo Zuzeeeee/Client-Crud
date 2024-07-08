@@ -7,6 +7,7 @@ import { MdSearch } from 'react-icons/md';
 import React from 'react';
 import InputMask from 'react-input-mask';
 import { useDebouncedCallback } from 'use-debounce';
+import { redirect } from 'next/navigation';
 
 const AddUserPage = () => {
   const callback = (content: {
@@ -35,6 +36,8 @@ const AddUserPage = () => {
     },
     400
   );
+
+  let error;
 
   const handleAddUser = (formData: FormData) => {
     var object: any = {};
@@ -131,6 +134,8 @@ const AddUserPage = () => {
           disabled
           required
         />
+
+        {error && error}
 
         <button
           type='submit'

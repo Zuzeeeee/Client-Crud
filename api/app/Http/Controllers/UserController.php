@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use \App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -10,9 +11,13 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $user = User::paginate(2, ["*"], "page");
+        $q = $request->input('query');
+        $user = User::query()->latest()->select()->where(function (Builder $subQuery) use ($q) {
+            $subQuery->where('name', 'like', '%' . $q . '%')
+                ->orWhere('surname', 'like', '%' . $q . '%');
+        })->paginate(8, ["*"], "page");
         return response()->json($user);
     }
 
@@ -25,6 +30,11 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        $email = $request->input("email");
+        if (User::where("email", $email)->exists()) {
+            return response()->json(['message' => "Email already exists", 'data' => null], 400);
+        }
+
         $validator = $this->validateUser();
         if ($validator->fails()) {
             return response()->json(['message' => $validator->messages(), 'data' => null], 400);
