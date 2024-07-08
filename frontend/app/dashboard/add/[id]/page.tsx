@@ -1,13 +1,32 @@
-const AddCardPage = () => {
+'use client';
+
+import { addCard, CardData } from '../../../lib/action';
+const AddCardPage = ({ params }: { params: { id: string } }) => {
+  const { id } = params;
+
+  const handleAddCard = async (formData: FormData) => {
+    var data: any = {};
+    formData.forEach((value, key) => (data[key] = value));
+
+    console.log(data);
+
+    addCard(data as unknown as CardData, id);
+  };
+
   return (
     <div className='bg-[#182237] p-8 rounded mt-4'>
-      <form className='flex flex-wrap justify-between'>
+      <form
+        action={(data) => handleAddCard(data)}
+        className='flex flex-wrap justify-between'
+      >
         <input
           type='text'
           className='w-5/12'
           placeholder='Number'
           name='number'
           required
+          minLength={12}
+          maxLength={16}
         />
         <input
           type='text'
@@ -15,6 +34,8 @@ const AddCardPage = () => {
           placeholder='CVV'
           name='cvv'
           required
+          minLength={3}
+          maxLength={3}
         />
         <input
           type='date'

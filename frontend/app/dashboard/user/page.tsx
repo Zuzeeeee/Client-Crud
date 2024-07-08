@@ -4,6 +4,8 @@ import { addUser, findCep, UserData } from '@/app/lib/action';
 import { ChangeEvent } from 'react';
 import { useFormState } from 'react-dom';
 import { MdSearch } from 'react-icons/md';
+import React from 'react';
+import InputMask from 'react-input-mask';
 import { useDebouncedCallback } from 'use-debounce';
 
 const AddUserPage = () => {
@@ -47,6 +49,7 @@ const AddUserPage = () => {
     }
     const data = { ...object, street, city, state };
 
+    console.log(data);
     addUser(data as unknown as UserData);
   };
 
@@ -84,13 +87,13 @@ const AddUserPage = () => {
           name='birthDate'
           required
         />
-        <input
-          type='text'
+        <InputMask
+          mask='(99) 99999-9999'
           className='w-5/12'
-          placeholder='telephone'
           name='telephone'
+          alwaysShowMask
           required
-        />
+        ></InputMask>
 
         <input
           type='text'

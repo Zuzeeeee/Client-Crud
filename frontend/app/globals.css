@@ -22,6 +22,9 @@
   form input {
     @apply p-3 rounded border-[#2e374a] border-2 my-4 bg-[#151c2c];
   }
+  td input {
+    @apply p-2 rounded border-none bg-transparent;
+  }
 }
 
 @layer utilities {

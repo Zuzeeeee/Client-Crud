@@ -14,5 +14,4 @@ Route::delete('/user/{id}', [UserController::class, 'destroy']);
 
 Route::get('/card/{id}', [CardController::class, 'index']);
 Route::post('/card/{id}', [CardController::class, 'store']);
-// Route::put('/card/{id}', [CardController::class, 'update']);
 Route::delete('/card/{id}', [CardController::class, 'destroy']);

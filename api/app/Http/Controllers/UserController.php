@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $user = User::paginate(8, ["*"], "page");
+        $user = User::paginate(2, ["*"], "page");
         return response()->json($user);
     }
 
@@ -21,6 +21,7 @@ class UserController extends Controller
         $user = User::find($id);
         return response()->json($user);
     }
+
 
     public function store(Request $request)
     {
@@ -31,7 +32,6 @@ class UserController extends Controller
 
         $user = User::create($validator->validate());
         return response()->json(['message' => 'User Saved', 'data' => $user], 200);
-
     }
 
     public function update(Request $request, $id)
@@ -50,15 +50,15 @@ class UserController extends Controller
     public function validateUser()
     {
         return Validator::make(request()->all(), [
-            'name' => 'required|string',
-            'surname' => 'required|string',
-            'email' => 'required|unique:users',
+            'name' => 'required',
+            'surname' => 'required',
+            'email' => 'required',
             'birthDate' => 'required',
             'telephone' => 'required',
             'cep' => 'required',
-            'street' => 'required|string',
-            'city' => 'required|string',
-            'state' => 'required|string',
+            'street' => 'required',
+            'city' => 'required',
+            'state' => 'required',
         ]);
     }
 }

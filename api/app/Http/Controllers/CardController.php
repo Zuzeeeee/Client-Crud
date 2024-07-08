@@ -73,8 +73,9 @@ class CardController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Card $card)
+    public function destroy($cardId)
     {
+        $card = Card::findOrFail($cardId);
         if ($card->delete()) {
             return response()->json(["message" => "Card Deleted"], 200);
         }
@@ -84,7 +85,7 @@ class CardController extends Controller
     public function validateCard()
     {
         return Validator::make(request()->all(), [
-            'number' => 'required|string|min:12|max:12',
+            'number' => 'required|string|min:12|max:16',
             'cvv' => 'required|string|min:3|max:3',
             'expiredAt' => 'required',
         ]);

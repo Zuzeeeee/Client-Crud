@@ -1,7 +1,10 @@
 import { getAllUser } from '@/app/lib/action';
+import FormDeleteUser from '@/app/ui/dashboard/formDeleteUser/formDeleteUser';
+import MaskedPhone from '@/app/ui/dashboard/maskedPhone/maskedPhone';
 import Pagination from '@/app/ui/dashboard/pagination/pagination';
 import Search from '@/app/ui/dashboard/search/search';
 import Link from 'next/link';
+import React from 'react';
 
 const Dashboard = async ({
   searchParams,
@@ -10,12 +13,12 @@ const Dashboard = async ({
 }) => {
   const q = searchParams?.q || '';
   const page = searchParams?.page || 1;
-  const { data } = await getAllUser(page);
+  const { data, total } = await getAllUser(page);
   return (
     <div className='p-5 mt-5 bg-[#182237] rounded'>
       <div className='flex items-center justify-between'>
         <Search placeholder='Search for a user...' />
-        <Link href='/dashboard/users/add'>
+        <Link href='/dashboard/user'>
           <button className='p-2 bg-indigo-700 rounded cursor-pointer text-white border-none'>
             Add New
           </button>
@@ -34,7 +37,7 @@ const Dashboard = async ({
         <tbody>
           {data.map(
             (user: {
-              id: number;
+              id: string;
               name: string;
               surname: string;
               email: string;
@@ -49,7 +52,9 @@ const Dashboard = async ({
                 </td>
                 <td className='p-2'>{user.email}</td>
                 <td className='p-2'>{user.birthDate}</td>
-                <td className='p-2'>{user.telephone}</td>
+                <td className='p-2'>
+                  <MaskedPhone phone={user.telephone}></MaskedPhone>
+                </td>
                 <td className='p-2'>
                   <div className='flex gap-4'>
                     <Link href={`/dashboard/${user.id}`}>
@@ -57,12 +62,7 @@ const Dashboard = async ({
                         View
                       </button>
                     </Link>
-                    <form>
-                      <input type='hidden' name='id' value={user.id} />
-                      <button className='rounded cursor-pointer py-2 px-3 text-white border-none bg-red-500'>
-                        Delete
-                      </button>
-                    </form>
+                    <FormDeleteUser userId={user.id}></FormDeleteUser>
                   </div>
                 </td>
               </tr>
@@ -70,7 +70,7 @@ const Dashboard = async ({
           )}
         </tbody>
       </table>
-      <Pagination count={data.length} />
+      <Pagination count={total} />
     </div>
   );
 };

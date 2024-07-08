@@ -1,5 +1,6 @@
 'use server';
 
+import axios from 'axios';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -13,6 +14,12 @@ export interface UserData {
   street: string;
   state: string;
   city: string;
+}
+
+export interface CardData {
+  number: string;
+  cvv: string;
+  expiredAt: string;
 }
 
 const uri = 'http://127.0.0.1:8000';
@@ -29,7 +36,6 @@ export const findCep = async (formData: string) => {
 };
 
 export const addUser = async (formData: UserData) => {
-  console.log(formData);
   const {
     name,
     surname,
@@ -55,21 +61,37 @@ export const addUser = async (formData: UserData) => {
       city,
     };
 
-    const response = await fetch(`${uri}/api/user`, {
-      method: 'POST',
-      headers: new Headers({ 'content-type': 'application/json' }),
-      body: JSON.stringify(newUser),
-    });
+    const response = await axios.post(`${uri}/api/user`, newUser);
 
-    if (!response.ok) {
-      throw new Error('Error on creating user');
-    }
+    return response;
   } catch (err) {
     console.log(err);
     throw new Error('Error on creating user');
   } finally {
     revalidatePath('/dashboard');
     redirect('/dashboard');
+  }
+};
+
+export const addCard = async (formData: CardData, id: string) => {
+  const { number, cvv, expiredAt } = formData;
+
+  try {
+    const newCard = {
+      number,
+      cvv,
+      expiredAt,
+    };
+
+    const response = await axios.post(`${uri}/api/card/${id}`, newCard);
+
+    return response;
+  } catch (err) {
+    console.log(err);
+    throw new Error('Error on creating card');
+  } finally {
+    revalidatePath(`/dashboard/${id}`);
+    redirect(`/dashboard/${id}`);
   }
 };
 
@@ -82,7 +104,9 @@ export const getAllUser = async (page: number) => {
 };
 
 export const getUser = async (userId: string) => {
-  const response = await fetch(`${uri}/api/user/${userId}`);
+  const response = await fetch(`${uri}/api/user/${userId}`, {
+    next: { tags: ['users'] },
+  });
 
   const res = response.json();
 
@@ -90,9 +114,33 @@ export const getUser = async (userId: string) => {
 };
 
 export const getUserCards = async (userId: string) => {
-  const response = await fetch(`${uri}/api/card/${userId}`);
+  const response = await fetch(`${uri}/api/card/${userId}`, {
+    next: { tags: ['users'] },
+  });
 
   const res = response.json();
 
   return res.then((data) => data);
+};
+
+export const deleteCard = async (cardId: string, userId: string) => {
+  const response = await fetch(`${uri}/api/card/${cardId}`, {
+    method: 'delete',
+  });
+
+  console.log(response.status);
+
+  revalidatePath(`/dashboard`);
+
+  return response.status;
+};
+
+export const deleteUser = async (userId: string) => {
+  const response = await fetch(`${uri}/api/user/${userId}`, {
+    method: 'delete',
+  });
+
+  revalidatePath(`/dashboard`);
+
+  return response.status;
 };
